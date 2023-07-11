@@ -1,0 +1,86 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+  <h1>Update Flight</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form|crispy }}
+    {{ form2|crispy }}
+
+    <div class="d-flex justify-content-between">
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+  <form action="{% url 'Show flight' %}" method="GET">
+    <button type="submit" class="btn btn-danger">back</button>
+  </form>
+</div>
+</div>
+{% endblock %}
+
+
+{% comment %} {% extends 'main/base.html' %}
+
+{% block title %}{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+  <h1>Update Flight</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form|crispy }}
+    
+    <div id="formset-container">
+      {% for form in form2 %}
+        {{ form|crispy }}
+        <button type="button" class="btn btn-danger remove-form">Remove</button>
+      {% endfor %}
+    </div>
+
+    <button type="button" class="btn btn-secondary" id="add-form">Add</button>
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+  
+  <form action="{% url 'Show flight' %}" method="GET">
+    <button type="submit" class="btn btn-danger">Back</button>
+  </form>
+</div>
+
+<script>
+  // JavaScript code to handle adding and removing forms dynamically
+  document.addEventListener('DOMContentLoaded', function() {
+    const formsetContainer = document.getElementById('formset-container');
+    const addFormButton = document.getElementById('add-form');
+    
+    function addForm() {
+      const formCount = formsetContainer.childElementCount;
+      const newFormHtml = '{{ form2.empty_form|crispy }}'.replace(/__prefix__/g, formCount);
+      const newForm = document.createElement('div');
+      newForm.innerHTML = newFormHtml;
+      formsetContainer.appendChild(newForm);
+      addRemoveButtonEvent();
+    }
+    
+    function removeForm(event) {
+      const formToRemove = event.target.parentNode;
+      formToRemove.parentNode.removeChild(formToRemove);
+    }
+    
+    function addRemoveButtonEvent() {
+      const removeButtons = document.getElementsByClassName('remove-form');
+      for (let i = 0; i < removeButtons.length; i++) {
+        removeButtons[i].addEventListener('click', removeForm);
+      }
+    }
+    
+    addFormButton.addEventListener('click', addForm);
+    addRemoveButtonEvent();
+  });
+</script>
+{% endblock %} {% endcomment %}

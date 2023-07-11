@@ -1,0 +1,107 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Flight List{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<!-- your_template.html -->
+{% if user.is_authenticated %}
+<div class="container">
+  <div class="table-responsive-xl">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+              <th class="table-header">Flight Number</th>
+              <th class="table-header">From Location</th>
+              <th class="table-header">To Location</th>
+              <th class="table-header">Departure Date</th>
+              <th class="table-header">Departure Time</th>
+              <th class="table-header">Arrival Date</th>
+              <th class="table-header">Arrival Time</th>
+              <th class="table-header">Flight Status</th>
+              <th class="table-header"> </th>
+              <th class="table-header"> </th>
+              <th class="table-header"> </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in data %}
+              <tr>
+                <td class="table-cell">{{ item.flight_number }}</td>
+                <td class="table-cell">{{ item.from_location }}</td>
+                <td class="table-cell">{{ item.to_location }}</td>
+                <td class="table-cell">{{ item.departure_date }}</td>
+                <td class="table-cell">{{ item.departure_time }}</td>
+                <td class="table-cell">{{ item.arrival_date }}</td>
+                <td class="table-cell">{{ item.arrival_time }}</td>
+                <td class="table-cell">{{ item.flight_status }}</td>
+
+
+                {% if not request.user.is_staff %}
+                <td class="table-cell-button">            
+                <form action="{% url 'Expand' flight_number=item.flight_number %}" method="GET">
+                    <button type="submit" class="btn btn-success">Open</button>
+                </form>
+                </td>
+                {% endif %}
+
+
+                {% if request.user.is_staff %}
+                <td class="table-cell-button"> 
+                <form action="{% url 'update_flight' flight_number=item.flight_number %}" method="GET">
+                    <button type="submit" class="btn btn-warning">Update</button>
+                </form>
+                </td>
+
+                <td class="table-cell-button"> 
+                <form action="{% url 'delete_flight' flight_number=item.flight_number %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+                </td>
+                {% endif %}
+
+
+                
+              </tr>
+            {% endfor %}
+          </tbody>
+          
+    </table>
+  </div>
+  {% if request.user.is_staff %}
+  <form action="{% url 'Create flight' %}" method="GET">
+    <button type="submit" class="btn btn-success">Create a flight schedule</button>
+  </form>
+  {% endif %}
+</div>
+{% else %}
+<p>Login <a href="/login">Here</a></p>
+{% endif %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    .table-header {
+        font-size: 18px;
+        font-weight: bold;
+      }
+      
+      .table-cell {
+        font-size: 16px;
+        padding: 20px;
+        white-space: nowrap;
+        min-width: 100px; 
+    }
+
+    .table-cell-button {
+        font-size: 16px;   
+        white-space: nowrap;
+        max-width: 100px; 
+    }
+</style>
+
+
+{% endblock %}

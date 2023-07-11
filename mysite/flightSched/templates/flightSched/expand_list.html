@@ -1,0 +1,174 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+  <h1>  </h1>
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="container">
+      {% for item in data2 %}
+      <div>
+        <div class="col">
+          <div class="badge badge-info custom-badge">From location</div>
+        </div>
+        <div class="col-md-6">
+          <p class="form-control-static">{{item.from_location}}</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="col">
+          <div class="badge badge-info custom-badge">Destination</div>
+        </div>
+        <div class="col-md-6">
+          <p class="form-control-static">{{item.to_location}}</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="col">
+          <div class="badge badge-info custom-badge">Departure date</div>
+        </div>
+        <div class="col-md-6">
+          <p class="form-control-static">{{item.departure_date}}</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="col">
+          <div class="badge badge-info custom-badge">Departure time</div>
+        </div>
+        <div class="col-md-6">
+          <p class="form-control-static">{{item.departure_time}}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% for item in data %}
+    <hr class="border-top my-4" style="border-width: 3px;">
+    
+    <div class="form-group">
+      <input class="form-check-input checkbox-toggle" type="checkbox" id="checkbox{{ forloop.counter }}" name="checkbox{{ forloop.counter }}" data-price="{{ item.price }}">
+      <span class="badge badge-info custom-badge">{{ item.class_name }}</span>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label for="baggage_allowance" class="label label-primary">Baggage Allowance</label>
+      </div>
+      <div class="col-md-6">
+        <p class="form-control-static">{{ item.baggage_allowance }}</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label for="baggage_allowance" class="label label-primary">Price</label>
+      </div>
+      <div class="col-md-6">
+        <p class="form-control-static">{{ item.price }}</p>
+      </div>
+    </div>
+
+    {% if not forloop.last %}
+    <hr class="border-top my-4" style="border-width: 3px;">
+    {% endif %}
+    {% endfor %}
+
+    <hr class="border-top my-4" style="border-width: 3px;">
+    <hr class="border-top my-4" style="border-width: 3px;">
+    <div class="row">        
+      <div class="col-md-6">   
+        <span class="badge badge-info custom-badge">Type</span>   
+        <div>
+          <input class="form-check-input checkbox-toggle2" type="checkbox" id="round-trip-checkbox" name="round-trip-checkbox">
+          <p class="form-control-static">Round-trip</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div>
+          <input class="form-check-input checkbox-toggle2" type="checkbox" id="one-way-checkbox" name="one-way-checkbox">
+          <p class="form-control-static">One-way</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="total-price-container" style="display: none;">
+      <hr class="border-top my-4" style="border-width: 3px;">
+      <div class="row">
+        <div class="col-md-6">
+          <label for="total-price" class="label label-primary">Total Price:</label>
+        </div>
+        <div class="col-md-6">
+          <p id="total-price" class="form-control-static"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+    
+  </form>
+  <form action="{% url 'Show flight' %}" method="GET">
+    <button type="submit" class="btn btn-danger">Back</button>
+  </form>
+</div>
+
+<script>
+  function calculateTotalPrice() {
+    var checkboxes = document.getElementsByClassName('checkbox-toggle');
+    var roundTripCheckbox = document.getElementById('round-trip-checkbox');
+    var oneWayCheckbox = document.getElementById('one-way-checkbox');
+    var totalPrice = 0;
+    var lastCheckedPrice = 0;
+  
+    for (var i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked) {
+        var price = parseFloat(checkboxes[i].getAttribute('data-price'));
+        lastCheckedPrice = price; // Update the last checked price
+      }
+    }
+  
+    if (roundTripCheckbox.checked) {
+      totalPrice = lastCheckedPrice * 1.8; // Use the last checked price for calculation
+    } else if (oneWayCheckbox.checked) {
+      totalPrice = lastCheckedPrice; // Use the last checked price for calculation
+    }
+  
+    var totalPriceContainer = document.getElementById('total-price-container');
+    var totalPriceElement = document.getElementById('total-price');
+  
+    totalPriceElement.textContent = totalPrice.toFixed(1);
+  
+    if (totalPrice > 0) {
+      totalPriceContainer.style.display = 'block';
+    } else {
+      totalPriceContainer.style.display = 'none';
+    }
+  }
+
+var checkboxes = document.getElementsByClassName('checkbox-toggle');
+for (var i = 0; i < checkboxes.length; i++) {
+  checkboxes[i].addEventListener('click', calculateTotalPrice);
+}
+
+var roundTripCheckbox = document.getElementById('round-trip-checkbox');
+roundTripCheckbox.addEventListener('click', calculateTotalPrice);
+
+var oneWayCheckbox = document.getElementById('one-way-checkbox');
+oneWayCheckbox.addEventListener('click', calculateTotalPrice);
+</script>
+
+<style>
+  .custom-badge {
+    font-size: 1.2em; /* Adjust the size as per your preference */
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Create New Flight{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h3></h3>
+  <form method="POST" class="form-group">
+    
+    {% csrf_token %}
+    {{ class_formset.management_form }}
+
+    <div>
+  <input type="hidden" name="class_forms-TOTAL_FORMS" id="id_class_forms-TOTAL_FORMS" value="0">
+  <input type="hidden" name="class_forms-INITIAL_FORMS" id="id_class_forms-INITIAL_FORMS" value="0">
+  <input type="hidden" name="class_forms-MIN_NUM_FORMS" id="id_class_forms-MIN_NUM_FORMS" value="0">
+  <input type="hidden" name="class_forms-MAX_NUM_FORMS" id="id_class_forms-MAX_NUM_FORMS" value="1000">
+
+    </div>
+    
+
+    <div class="input-group mb-3">
+      {{ flight_form.from_location|as_crispy_field }}
+    </div>
+    <div class="input-group mb-3">
+      {{ flight_form.to_location|as_crispy_field }}
+    </div>
+    <div class="input-group mb-3">
+      <label>Departure Date:</label>
+      <input type="text" class="form-control datepicker" name="{{ flight_form.departure_date.name }}" id="departure_date" readonly>
+    </div>
+    <div class="input-group mb-3">
+      <label for="departure_time">Departure Time:</label>
+      <input type="text" class="form-control timepicker"  name="{{ flight_form.departure_time.name }}" id="departure_time" readonly>
+    </div>
+    <div class="input-group mb-3">
+      <label>Arrival Date:</label>
+      <input type="text" class="form-control datepicker" name="{{ flight_form.arrival_date.name }}" id="arrival_date" readonly>
+    </div>
+    <div class="input-group mb-3">
+      <label for="arrival_time">Arrival Time:</label>
+      <input type="text" class="form-control timepicker"  name="{{ flight_form.arrival_time.name }}" id="arrival_time" readonly>
+    </div>
+    <div class="input-group mb-3">
+      {{ flight_form.flight_status|as_crispy_field }}
+    </div>
+    <div class="input-group mb-3">
+      {{ flight_form.price|as_crispy_field }}
+    </div>
+
+    <h4>Classes:</h4>
+    <div id="class-formset">      
+
+      <div class="class-form">
+        <p class="h5 text-muted">{{ form.class_name.initial }}</p>
+        {{ class_formset.as_p }}        
+        <hr class="class-divider"> 
+      </div>
+    {% comment %} {% endfor %} {% endcomment %}   
+
+    <div class="d-flex justify-content-between">
+      <button type="submit" name="save" class="btn btn-success">Create New Flight</button>
+
+  </form>
+  <form action="{% url 'Show flight' %}" method="GET">
+    <button type="submit" class="btn btn-danger">back</button>
+  </form>
+</div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.datepicker').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true
+      });
+    });
+  </script>
+
+  <script>
+    $(document).ready(function() {
+      $('.timepicker').timepicker({
+        showMeridian: false,
+        minuteStep: 1,
+        defaultTime: false
+      });
+    });
+  </script>
+
+  {% comment %} <script>
+    $(document).ready(function() {
+      var classCount = {{ class_formset.total_form_count }};
+
+      $('#add-class-btn').click(function() {
+        if (classCount < 3) {
+          var classForm = `
+          <div class="class-form">
+            <div class="class-form">
+              {{ class_formset.as_p }}
+            </div>
+            <button type="button" class="btn btn-danger delete-class-btn">Delete Class</button>
+          </div>
+          <hr class="class-divider"> <!-- Dividing line -->
+          `;
+          $('#class-formset').append(classForm);
+          classCount++;
+        }
+      });
+
+      $(document).on('click', '.delete-class-btn', function() {
+        $(this).closest('.class-form').remove();
+        classCount--;
+      });
+    });
+  </script> {% endcomment %}
+  <style>
+    .class-divider {
+      border-top: 5px solid #ccc;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+{% endblock %}

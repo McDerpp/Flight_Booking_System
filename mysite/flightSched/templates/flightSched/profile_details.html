@@ -1,0 +1,74 @@
+{% extends "main/base.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">          
+          <form method="POST" class="form-group">
+            {% csrf_token %}
+            {% comment %} {{ user_profile|crispy }} {% endcomment %}
+
+
+            <div>
+              <div class="col">
+                <div class="badge badge-info custom-badge">Email</div>
+              </div>
+              <div class="col-md-6">
+                <p class="form-control-static">{{ email }}</p>
+              </div>
+            </div>  
+
+
+            
+            <div>
+              <div class="col">
+                <div class="badge badge-info custom-badge">Username</div>
+              </div>
+              <div class="col-md-6">
+                <p class="form-control-static">{{ username }}</p>
+              </div>
+            </div>  
+
+
+            
+            <div>
+              <div class="col">
+                <div class="badge badge-info custom-badge">First name</div>
+              </div>
+              <div class="col-md-6">
+                <p class="form-control-static"> {{ first_name }}</p>
+              </div>
+            </div>  
+
+
+            
+            <div>
+              <div class="col">
+                <div class="badge badge-info custom-badge">Last name</div>
+              </div>
+              <div class="col-md-6">
+                <p class="form-control-static">{{ last_name }}</p>
+              </div>
+            </div>  
+
+
+            <div>
+              <div class="col">
+                <div class="badge badge-info custom-badge">Date joined</div>
+              </div>
+              <div class="col-md-6">
+                <p class="form-control-static">{{ date_joined }}</p>
+              </div>
+            </div>  
+
+
+            <div class="text-center">          
+            </div>
+          </form>
+        </div>
+  
+{% endblock %}
